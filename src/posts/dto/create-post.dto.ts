@@ -7,8 +7,8 @@ export class CreatePostDto {
   @ApiProperty({ example: 'NestJS는...', description: '본문 내용' })
   content: string;
 
-  @ApiProperty({ example: 'tech', description: '카테고리 이름' })
-  category: string;
+  @ApiProperty({ example: 1, description: '카테고리 ID' })
+  categoryId: number;
 
   @ApiProperty({ example: 1, description: '작성자 ID' })
   authorId: number;

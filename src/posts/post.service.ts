@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
+import { Category } from 'src/category/entities/category.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
@@ -10,10 +11,23 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  create(createPostDto: CreatePostDto) {
-    const post = this.postRepository.create(createPostDto);
+  async create(createPostDto: CreatePostDto) {
+    const { categoryId, ...rest } = createPostDto;
+
+    const category = await this.categoryRepository.findOneBy({
+      id: categoryId,
+    });
+    if (!category) throw new NotFoundException('Category not found');
+
+    const post = this.postRepository.create({
+      ...rest,
+      category,
+    });
     return this.postRepository.save(post);
   }
 

@@ -16,7 +16,17 @@
 
 ---
 
-## 💬 Comment Table
+## 🏷️ Category Table
+
+| Column      | Type    | Description          |
+| ----------- | ------- | -------------------- |
+| id          | PK, int | 카테고리 ID          |
+| name        | string  | 카테고리 이름        |
+| description | string  | 카테고리 설명 (선택) |
+
+---
+
+## 💬 Comment Table (Optional)
 
 | Column     | Type         | Description                |
 | ---------- | ------------ | -------------------------- |
@@ -26,16 +36,6 @@
 | content    | text         | 댓글 내용                  |
 | parentId   | FK (Comment) | 대댓글일 경우 부모 댓글 ID |
 | createdAt  | datetime     | 작성일                     |
-
----
-
-## 🏷️ Category Table (Optional)
-
-| Column      | Type    | Description          |
-| ----------- | ------- | -------------------- |
-| id          | PK, int | 카테고리 ID          |
-| name        | string  | 카테고리 이름        |
-| description | string  | 카테고리 설명 (선택) |
 
 ---
 

@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Category } from '../../category/entities/category.entity';
 
 @Entity()
 export class Post {
@@ -17,8 +19,8 @@ export class Post {
   @Column('text')
   content: string;
 
-  @Column({ length: 100 })
-  category: string;
+  @ManyToOne(() => Category, (category) => category.posts, { nullable: true })
+  category: Category;
 
   // TODO 추후 수정
   @Column()
