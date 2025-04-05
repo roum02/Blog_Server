@@ -1,6 +1,7 @@
 # 📚 Blog Backend Database Schema
 
 - AWS 과금 문제로 ec2 및 RDS 재생성.. 이 시간이 좀 걸렸음 ^~^..
+- Docker 배포 + (Jenkins 자동배포)
 - (추가) Nginx
 
 ## 📝 Post Table
