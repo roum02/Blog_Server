@@ -1,5 +1,8 @@
 # 📚 Blog Backend Database Schema
 
+- AWS 과금 문제로 ec2 및 RDS 재생성.. 이 시간이 좀 걸렸음 ^~^..
+- (추가) Nginx
+
 ## 📝 Post Table
 
 | Column      | Type         | Description                    |

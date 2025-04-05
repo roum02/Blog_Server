@@ -12,6 +12,6 @@ export const typeOrmConfig: DataSourceOptions = {
   entities: [__dirname + '/../**/*.entity.{ts,js}'],
   synchronize: true, // 개발 중 true, 배포는 false
   ssl: {
-    rejectUnauthorized: false,
+    rejectUnauthorized: false, // 개발환경에서만 인증서 검증 생략
   },
 };
