@@ -7,8 +7,8 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Category } from 'src/category/entities/category.entity';
-import { Comment } from 'src/comments/entities/comment.entity';
+import { Category } from '@category/entities/category.entity';
+import { Comment } from '@comments/entities/comment.entity';
 
 @Entity()
 export class Post {
