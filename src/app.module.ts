@@ -5,9 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from '../config/typeorm.config';
 import { PostModule } from '@posts/post.module';
 import { CategoryModule } from '@category/category.module';
+import { CommentModule } from '@comments/comment.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), PostModule, CategoryModule],
+  imports: [
+    TypeOrmModule.forRoot(typeOrmConfig),
+    PostModule,
+    CategoryModule,
+    CommentModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -14,7 +14,6 @@ async function bootstrap() {
     .setTitle('Blog API')
     .setDescription('블로그 게시글 API 문서')
     .setVersion('1.0')
-    .addTag('posts')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
