@@ -68,7 +68,10 @@ export class PostService {
   }
 
   findOne(id: number) {
-    return this.postRepository.findOneBy({ id });
+    return this.postRepository.findOne({
+      where: { id },
+      relations: ['category'],
+    });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
