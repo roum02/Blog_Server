@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { Post } from 'src/posts/entities/post.entity';
+import { Post } from '@posts/entities/post.entity';
 
 @Entity()
 export class Comment {
