@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -16,6 +17,7 @@ import {
   ApiParam,
   ApiResponse,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
 
 @ApiTags('Posts')
@@ -41,8 +43,17 @@ export class PostController {
     description: '전체 게시글 목록을 조회합니다.',
   })
   @ApiResponse({ status: 200, description: '게시글 목록 반환' })
-  findAll() {
-    return this.postService.findAll();
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: ['latest', 'views', 'comments'],
+    description: '정렬 기준 (latest: 최신순, views: 조회순, comments: 댓글순)',
+  })
+  findAll(
+    @Query('categoryId') categoryId?: number,
+    @Query('sortBy') sortBy?: 'latest' | 'views' | 'comments',
+  ) {
+    return this.postService.findAll({ categoryId, sortBy });
   }
 
   @Get(':id')

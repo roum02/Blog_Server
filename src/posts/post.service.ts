@@ -31,8 +31,40 @@ export class PostService {
     return this.postRepository.save(post);
   }
 
-  findAll() {
-    return this.postRepository.find();
+  async findAll({
+    categoryId,
+    sortBy = 'latest',
+  }: {
+    categoryId?: number;
+    sortBy?: 'latest' | 'views' | 'comments';
+  }) {
+    // QueryBuilder
+    const query = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.category', 'category')
+      .leftJoinAndSelect('post.comments', 'comment')
+      .loadRelationCountAndMap('post.commentCount', 'post.comments');
+
+    if (categoryId) {
+      query.andWhere('post.categoryId = :categoryId', { categoryId });
+    }
+
+    query.andWhere('post.isPublished = true'); // 공개 게시글만
+
+    switch (sortBy) {
+      case 'views':
+        query.orderBy('post.viewCount', 'DESC');
+        break;
+      case 'comments':
+        query.orderBy('post.commentCount', 'DESC');
+        break;
+      case 'latest':
+      default:
+        query.orderBy('post.createdAt', 'DESC');
+        break;
+    }
+
+    return await query.getMany();
   }
 
   findOne(id: number) {
