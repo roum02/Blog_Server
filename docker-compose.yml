@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  nest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-app
+    ports:
+      - '8080:3000' # 왼쪽: 호스트, 오른쪽: 컨테이너
+    environment:
+      - NODE_ENV=production
+    restart: always
+    # command: sh -c "pnpm run migration:run && node dist/src/main" # 필요시
