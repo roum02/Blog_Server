@@ -8,6 +8,7 @@ import { CategoryModule } from '@category/category.module';
 import { CommentModule } from '@comments/comment.module';
 import { AuthModule } from '@auth/auth.module';
 import { UserModule } from '@user/user.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -17,6 +18,9 @@ import { UserModule } from '@user/user.module';
     CommentModule,
     AuthModule,
     UserModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
