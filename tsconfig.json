@@ -14,7 +14,8 @@
       "@posts/*": ["posts/*"],
       "@posts/entities/*": ["posts/entities/*"],
       "@category/*": ["category/*"],
-      "@comments/*": ["comments/*"]
+      "@comments/*": ["comments/*"],
+      "@auth/*": ["auth/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

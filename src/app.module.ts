@@ -6,6 +6,7 @@ import { typeOrmConfig } from '../config/typeorm.config';
 import { PostModule } from '@posts/post.module';
 import { CategoryModule } from '@category/category.module';
 import { CommentModule } from '@comments/comment.module';
+import { AuthModule } from '@auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CommentModule } from '@comments/comment.module';
     PostModule,
     CategoryModule,
     CommentModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
