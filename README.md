@@ -54,3 +54,7 @@
 | email     | string   | 이메일 주소              |
 | role      | enum     | 사용자 역할 (admin/user) |
 | createdAt | datetime | 가입일                   |
+
+# 카카오톡 로그인 프로세스
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FHyxHr%2FbtsHt56KTK3%2FHE4mSk5INdL33tH73eTIj0%2Fimg.png)

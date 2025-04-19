@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '@user/user.service';
+import { JwtService } from '@nestjs/jwt';
 
 // 카카오 토큰 요청 + 유저 정보 요청
 @Injectable()
@@ -12,6 +13,7 @@ export class AuthService {
     private readonly http: HttpService,
     private readonly config: ConfigService,
     private readonly userService: UserService,
+    private jwtService: JwtService,
   ) {}
 
   async getKakaoUserInfo(code: string) {
@@ -54,10 +56,13 @@ export class AuthService {
       nickname,
     );
 
+    const token = this.jwtService.sign({ sub: user.id }); // JWT 발급
+
     // 4. JWT 발급 등 추가 가능
     return {
       message: '로그인 성공',
       user,
+      token,
     };
   }
 }
