@@ -36,4 +36,9 @@ export class User {
   @ApiProperty({ example: '2025-04-19T12:00:00Z', description: '생성일' })
   @CreateDateColumn()
   createdAt: Date;
+
+  // 나중에 hash 로 저장
+  @ApiProperty({ example: 'refresh_token_here', description: '리프레시 토큰' })
+  @Column({ nullable: true })
+  refreshToken?: string;
 }

@@ -15,12 +15,19 @@ export class AuthController {
     @Body() body: { code: string },
     @Res({ passthrough: true }) res: ExpressResponse,
   ) {
-    const { token, user } = await this.authService.getKakaoUserInfo(body.code);
+    const { accessToken, refreshToken, user } =
+      await this.authService.getKakaoUserInfo(body.code);
     // 로그인 성공 후 토큰 발급 & 쿠키에 저장
-    res.cookie('token', token, {
+    res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 24, // 1일
+      maxAge: 1000 * 60 * 60, // 1시간
+    });
+
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
     });
 
     return { message: '로그인 성공', user };

@@ -14,9 +14,20 @@ export class UserService {
     return this.userRepository.findOneBy({ kakaoId });
   }
 
+  async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    user.refreshToken = refreshToken;
+    await this.userRepository.save(user);
+  }
+
   async createOrUpdateByKakao(
     kakaoId: string,
     nickname: string,
+    refreshToken?: string,
   ): Promise<User> {
     let user = await this.findByKakaoId(kakaoId);
 
@@ -24,10 +35,18 @@ export class UserService {
       const userCount = await this.userRepository.count();
       const role = userCount === 0 ? UserRole.ADMIN : UserRole.USER;
 
-      user = this.userRepository.create({ kakaoId, nickname, role });
-      await this.userRepository.save(user);
+      user = this.userRepository.create({
+        kakaoId,
+        nickname,
+        role,
+        // TODO bcrypt로 암호화 필요
+        refreshToken,
+      });
+    } else if (refreshToken) {
+      user.refreshToken = refreshToken; // 기존 사용자에게도 리프레시 토큰 저장
     }
 
+    await this.userRepository.save(user);
     return user;
   }
 }
