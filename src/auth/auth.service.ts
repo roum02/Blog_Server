@@ -34,13 +34,13 @@ export class AuthService {
       ),
     );
 
-    const accessToken = tokenResponse.data.access_token;
+    const kakaoAccessToken = tokenResponse.data.access_token;
 
     // 2. 카카오 사용자 정보 요청
     const userResponse = await firstValueFrom(
       this.http.get('https://kapi.kakao.com/v2/user/me', {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${kakaoAccessToken}`,
         },
       }),
     );
@@ -50,19 +50,34 @@ export class AuthService {
       userResponse.data.kakao_account.profile?.nickname ??
       generateRandomNickname();
 
-    // 3. 사용자 DB에 등록 or 조회
+    // 3. Access(유효기간 짧음 / 매 요청 시 인증) + Refresh Token(유효기간 김/ Access Token 만료되었을 경우만 사용 ) 발급
+    //const token = this.jwtService.sign({ sub: user.id }); // JWT 발급
+    const payload = { sub: kakaoId };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' }); // 짧게
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' }); // 길게
+
+    // 4. 사용자 DB에 등록 or 조회
     const user = await this.userService.createOrUpdateByKakao(
       kakaoId,
       nickname,
+      refreshToken,
     );
 
-    const token = this.jwtService.sign({ sub: user.id }); // JWT 발급
+    // 5. refreshToken DB 저장
+    /**
+     *  TODO radis 로 변경
+     * 인증 미들웨어에서 access token 검증
+     * 토큰 만료 후 프론트에서  /auth/refresh 호출해서 재발급 요청
+     * 로그아웃 시 refresh_token 제거 및 DB에서도 삭제
+     */
 
-    // 4. JWT 발급 등 추가 가능
+    await this.userService.saveRefreshToken(user.id, refreshToken);
+
     return {
       message: '로그인 성공',
       user,
-      token,
+      accessToken,
+      refreshToken,
     };
   }
 }
