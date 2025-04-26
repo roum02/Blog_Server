@@ -107,6 +107,18 @@ export class AuthService {
       newRefreshToken,
     };
   }
+
+  async logout(refreshToken: string) {
+    // 1. Refresh Token 복호화
+    const decoded = this.jwtService.verify(refreshToken);
+
+    if (!decoded || !decoded.sub) {
+      throw new UnauthorizedException('Refresh token이 유효하지 않습니다.');
+    }
+
+    // 2. DB에서 해당 유저의 refreshToken 삭제
+    await this.userService.removeRefreshToken(decoded.sub);
+  }
 }
 
 function generateRandomNickname(): string {

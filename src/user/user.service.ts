@@ -53,4 +53,14 @@ export class UserService {
     await this.userRepository.save(user);
     return user;
   }
+
+  async removeRefreshToken(userId: number): Promise<void> {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    user.refreshToken = null;
+    await this.userRepository.save(user);
+  }
 }

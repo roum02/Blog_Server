@@ -70,4 +70,25 @@ export class AuthController {
 
     return { message: '토큰 재발급 성공' };
   }
+
+  @Post('logout')
+  @ApiOperation({ summary: '로그아웃' })
+  async logout(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: ExpressResponse,
+  ) {
+    const refreshToken = req.cookies['refresh_token'];
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token이 없습니다.');
+    }
+
+    await this.authService.logout(refreshToken);
+
+    // 쿠키 삭제
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+
+    return { message: '로그아웃 성공' };
+  }
 }
