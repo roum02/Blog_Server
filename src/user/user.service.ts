@@ -14,6 +14,10 @@ export class UserService {
     return this.userRepository.findOneBy({ kakaoId });
   }
 
+  async findById(userId: number): Promise<User | null> {
+    return this.userRepository.findOneBy({ id: userId });
+  }
+
   async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) {

@@ -1,7 +1,14 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Response as ExpressResponse } from 'express';
+import { Request, Response as ExpressResponse } from 'express';
 
 // 프론트에서 code 받아옴
 @ApiTags('Auth')
@@ -31,5 +38,36 @@ export class AuthController {
     });
 
     return { message: '로그인 성공', user };
+  }
+
+  @Post('refresh')
+  @ApiOperation({ summary: 'Access Token 재발급' })
+  async refreshToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: ExpressResponse,
+  ) {
+    const refreshToken = req.cookies?.refresh_token;
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token이 없습니다.');
+    }
+
+    const { accessToken, newRefreshToken } =
+      await this.authService.reissueAccessToken(refreshToken);
+
+    // 새 AccessToken 저장
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60, // 1시간
+    });
+
+    // 새 RefreshToken 저장
+    res.cookie('refresh_token', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
+    });
+
+    return { message: '토큰 재발급 성공' };
   }
 }
