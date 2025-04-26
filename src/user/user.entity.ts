@@ -39,6 +39,6 @@ export class User {
 
   // 나중에 hash 로 저장
   @ApiProperty({ example: 'refresh_token_here', description: '리프레시 토큰' })
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   refreshToken?: string | null;
 }
