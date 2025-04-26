@@ -10,5 +10,7 @@ services:
       - '8080:8080' # 왼쪽: 호스트, 오른쪽: 컨테이너
     environment:
       - NODE_ENV=production
+    env_file:
+      - .env
     restart: always
     # command: sh -c "pnpm run migration:run && node dist/src/main" # 필요시
