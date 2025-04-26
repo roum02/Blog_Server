@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 // 파일 읽어옴
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
@@ -50,18 +50,17 @@ export class AuthService {
       userResponse.data.kakao_account.profile?.nickname ??
       generateRandomNickname();
 
-    // 3. Access(유효기간 짧음 / 매 요청 시 인증) + Refresh Token(유효기간 김/ Access Token 만료되었을 경우만 사용 ) 발급
-    //const token = this.jwtService.sign({ sub: user.id }); // JWT 발급
-    const payload = { sub: kakaoId };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' }); // 짧게
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' }); // 길게
-
-    // 4. 사용자 DB에 등록 or 조회
+    // 3. 사용자 DB에 등록 or 조회
     const user = await this.userService.createOrUpdateByKakao(
       kakaoId,
       nickname,
-      refreshToken,
     );
+
+    // 4. Access(유효기간 짧음 / 매 요청 시 인증) + Refresh Token(유효기간 김/ Access Token 만료되었을 경우만 사용 ) 발급
+    //const token = this.jwtService.sign({ sub: user.id }); // JWT 발급
+    const payload = { sub: user.id };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1h' }); // 짧게
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' }); // 길게
 
     // 5. refreshToken DB 저장
     /**
@@ -79,6 +78,46 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async reissueAccessToken(refreshToken: string) {
+    // 1. refreshToken 검증, refreshToken 복호화
+    const decoded = this.jwtService.verify(refreshToken);
+
+    if (!decoded || !decoded.sub) {
+      throw new UnauthorizedException('Refresh token이 유효하지 않습니다.');
+    }
+
+    // 2. DB에 저장된 refreshToken과 비교
+    const user = await this.userService.findById(decoded.sub);
+    if (!user || user.refreshToken !== refreshToken) {
+      throw new UnauthorizedException('Refresh token이 일치하지 않습니다.');
+    }
+
+    // 3. 새로운 accessToken, refreshToken 발급
+    const payload = { sub: user.id };
+    const newAccessToken = this.jwtService.sign(payload, { expiresIn: '1h' });
+    const newRefreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // 4. 새로운 refreshToken 저장 (기존거 덮어쓰기)
+    await this.userService.saveRefreshToken(user.id, newRefreshToken);
+
+    return {
+      accessToken: newAccessToken,
+      newRefreshToken,
+    };
+  }
+
+  async logout(refreshToken: string) {
+    // 1. Refresh Token 복호화
+    const decoded = this.jwtService.verify(refreshToken);
+
+    if (!decoded || !decoded.sub) {
+      throw new UnauthorizedException('Refresh token이 유효하지 않습니다.');
+    }
+
+    // 2. DB에서 해당 유저의 refreshToken 삭제
+    await this.userService.removeRefreshToken(decoded.sub);
   }
 }
 
