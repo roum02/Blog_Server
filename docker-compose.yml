@@ -19,7 +19,7 @@ services:
     image: nginx:latest
     container_name: nginx-ssl
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./default.conf:/etc/nginx/conf.d/default.conf
       - ./cert:/etc/nginx/cert
     ports:
       - '443:443'
