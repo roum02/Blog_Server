@@ -14,3 +14,14 @@ services:
       - .env
     restart: always
     # command: sh -c "pnpm run migration:run && node dist/src/main" # 필요시
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-ssl
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./cert:/etc/nginx/cert
+    ports:
+      - '443:443'
+    depends_on:
+      - nest-app
