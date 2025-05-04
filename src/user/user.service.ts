@@ -37,7 +37,7 @@ export class UserService {
 
     if (!user) {
       const userCount = await this.userRepository.count();
-      const role = userCount === 0 ? UserRole.ADMIN : UserRole.USER;
+      const role = userCount === 0 ? UserRole.ADMIN : UserRole.GUEST;
 
       user = this.userRepository.create({
         kakaoId,
