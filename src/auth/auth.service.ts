@@ -76,7 +76,6 @@ export class AuthService {
       message: '로그인 성공',
       user,
       accessToken,
-      refreshToken,
     };
   }
 
@@ -232,5 +231,5 @@ function generateRandomNickname(): string {
   const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
   const randomNumber = Math.floor(1000 + Math.random() * 9000); // 1000~9999
 
-  return `익명의 ${randomAdj}${randomNoun}${randomNumber}`;
+  return `익명의 ${randomAdj} ${randomNoun} ${randomNumber}`;
 }
