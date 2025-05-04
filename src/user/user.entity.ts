@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 
 export enum UserRole {
-  ADMIN = 'admin',
-  USER = 'user',
+  ADMIN = 'ADMIN',
+  GUEST = 'GUEST',
 }
 
 @Entity()
@@ -27,10 +27,10 @@ export class User {
 
   @ApiProperty({
     enum: UserRole,
-    default: UserRole.USER,
+    default: UserRole.GUEST,
     description: '사용자 권한',
   })
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.GUEST })
   role: UserRole;
 
   @ApiProperty({ example: '2025-04-19T12:00:00Z', description: '생성일' })
