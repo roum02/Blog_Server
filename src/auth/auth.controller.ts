@@ -22,9 +22,8 @@ export class AuthController {
     @Body() body: { code: string },
     @Res({ passthrough: true }) res: ExpressResponse,
   ) {
-    const { accessToken, user } = await this.authService.getKakaoUserInfo(
-      body.code,
-    );
+    const { accessToken, refreshToken, user } =
+      await this.authService.getKakaoUserInfo(body.code);
     // 로그인 성공 후 토큰 발급 & 쿠키에 저장
     res.cookie('access_token', accessToken, {
       httpOnly: true,
@@ -35,14 +34,14 @@ export class AuthController {
       maxAge: 1000 * 60 * 60, // 1시간
     });
 
-    // res.cookie('refresh_token', refreshToken, {
-    //   httpOnly: true,
-    //   //secure: process.env.NODE_ENV === 'production',
-    //   secure: true,
-    //   sameSite: 'none',
-    //   path: '/',
-    //   maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
-    // });
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      // secure: process.env.NODE_ENV === 'production',
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
+    });
 
     return { message: '로그인 성공', user };
   }
@@ -91,6 +90,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: ExpressResponse,
   ) {
     const refreshToken = req.cookies['refresh_token'];
+    console.log('1', refreshToken);
 
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token이 없습니다.');
