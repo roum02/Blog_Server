@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -44,16 +45,29 @@ export class PostController {
   })
   @ApiResponse({ status: 200, description: '게시글 목록 반환' })
   @ApiQuery({
+    name: 'categoryId',
+    required: false,
+    type: Number,
+    description: '카테고리 ID',
+  })
+  @ApiQuery({
     name: 'sortBy',
     required: false,
     enum: ['latest', 'views', 'comments'],
     description: '정렬 기준 (latest: 최신순, views: 조회순, comments: 댓글순)',
   })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: '조회할 게시글 개수 제한',
+  })
   findAll(
     @Query('categoryId') categoryId?: number,
     @Query('sortBy') sortBy?: 'latest' | 'views' | 'comments',
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
-    return this.postService.findAll({ categoryId, sortBy });
+    return this.postService.findAll({ categoryId, sortBy, limit });
   }
 
   @Get(':id')

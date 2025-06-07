@@ -34,15 +34,18 @@ export class PostService {
   async findAll({
     categoryId,
     sortBy = 'latest',
+    limit,
   }: {
     categoryId?: number;
     sortBy?: 'latest' | 'views' | 'comments';
+    limit?: number;
   }) {
     // QueryBuilder
     const query = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.category', 'category')
       .leftJoinAndSelect('post.comments', 'comment')
+      // .loadRelationCountAndMap('post.commentCount', 'post.comments');
       .loadRelationCountAndMap('post.commentCount', 'post.comments');
 
     if (categoryId) {
@@ -62,6 +65,10 @@ export class PostService {
       default:
         query.orderBy('post.createdAt', 'DESC');
         break;
+    }
+
+    if (limit) {
+      query.take(limit);
     }
 
     return await query.getMany();
