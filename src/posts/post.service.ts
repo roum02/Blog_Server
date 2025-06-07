@@ -71,7 +71,9 @@ export class PostService {
       query.take(limit);
     }
 
-    return await query.getMany();
+    const [posts, totalCount] = await query.getManyAndCount();
+
+    return { posts, totalCount };
   }
 
   findOne(id: number) {
