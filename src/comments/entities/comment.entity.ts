@@ -16,9 +16,8 @@ export class Comment {
   @Column('text')
   content: string;
 
-  // TODO 추후 수정
   @Column()
-  authorId: number;
+  authorId: string;
 
   @ManyToOne(() => Post, (post) => post.comments, { onDelete: 'CASCADE' })
   post: Post;

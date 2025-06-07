@@ -5,8 +5,8 @@ export class CreateCommentDto {
   @ApiProperty({ example: 1, description: '댓글이 달릴 게시글 ID' })
   postId: number;
 
-  @ApiProperty({ example: 2, description: '댓글 작성자 ID' })
-  authorId: number;
+  @ApiProperty({ example: 'example', description: '댓글 작성자 nickname' })
+  authorId: string;
 
   @ApiProperty({ example: '정말 좋은 글이에요!', description: '댓글 내용' })
   content: string;

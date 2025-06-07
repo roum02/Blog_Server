@@ -36,7 +36,7 @@ export class AuthController {
 
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      //secure: process.env.NODE_ENV === 'production',
+      // secure: process.env.NODE_ENV === 'production',
       secure: true,
       sameSite: 'none',
       path: '/',
@@ -90,6 +90,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: ExpressResponse,
   ) {
     const refreshToken = req.cookies['refresh_token'];
+    console.log('1', refreshToken);
 
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token이 없습니다.');

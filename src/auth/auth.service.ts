@@ -76,6 +76,7 @@ export class AuthService {
       message: '로그인 성공',
       user,
       accessToken,
+      refreshToken,
     };
   }
 
@@ -110,6 +111,8 @@ export class AuthService {
   async logout(refreshToken: string) {
     // 1. Refresh Token 복호화
     const decoded = this.jwtService.verify(refreshToken);
+
+    console.log(2, decoded);
 
     if (!decoded || !decoded.sub) {
       throw new UnauthorizedException('Refresh token이 유효하지 않습니다.');

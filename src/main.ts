@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const httpsOptions = {
@@ -10,6 +11,8 @@ async function bootstrap() {
   };
 
   const app = await NestFactory.create(AppModule, { httpsOptions });
+
+  app.use(cookieParser());
 
   app.enableCors({
     origin: [
