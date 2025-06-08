@@ -19,6 +19,7 @@ async function bootstrap() {
       'http://localhost:8080',
       'http://localhost:3000',
       'https://localhost:3000',
+      'https://localhost:8080',
     ],
     credentials: true,
   });
@@ -27,7 +28,7 @@ async function bootstrap() {
     .setTitle('Blog API')
     .setDescription('블로그 게시글 API 문서')
     .setVersion('1.0')
-    .addServer('http://localhost:8080')
+    .addServer('https://localhost:8080')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

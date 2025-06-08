@@ -103,18 +103,6 @@ export class PostController {
     return this.postService.update(+id, updatePostDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({
-    summary: '게시글 삭제',
-    description: 'ID를 기반으로 게시글을 삭제합니다.',
-  })
-  @ApiParam({ name: 'id', description: '게시글 ID' })
-  @ApiResponse({ status: 200, description: '게시글 삭제 성공' })
-  @ApiResponse({ status: 404, description: '게시글을 찾을 수 없습니다.' })
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
-  }
-
   @ApiOperation({ summary: '게시글 작성, 수정 시 이미지 업로드' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -129,5 +117,24 @@ export class PostController {
   async saveImage(@UploadedFile() file: Express.Multer.File) {
     // 받아온 file이라는 데이터(여기서는 이미지 파일)를 AWS S3라는 클라우드 저장소에 올리고, 그 파일이 저장된 위치인 URL을 반환
     return await this.postService.imageUpload(file);
+  }
+
+  @Delete('image')
+  @ApiOperation({ summary: 'S3 이미지 삭제' })
+  async deleteImage(@Query('key') key: string) {
+    await this.postService.removeImage(key);
+    return { message: '이미지 삭제 완료' };
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: '게시글 삭제',
+    description: 'ID를 기반으로 게시글을 삭제합니다.',
+  })
+  @ApiParam({ name: 'id', description: '게시글 ID' })
+  @ApiResponse({ status: 200, description: '게시글 삭제 성공' })
+  @ApiResponse({ status: 404, description: '게시글을 찾을 수 없습니다.' })
+  remove(@Param('id') id: string) {
+    return this.postService.remove(+id);
   }
 }

@@ -120,4 +120,9 @@ export class PostService {
 
     return { imageUrl };
   }
+
+  // 이미지 지우기
+  async removeImage(imageKey: string) {
+    await this.awsService.deleteImage(imageKey);
+  }
 }
