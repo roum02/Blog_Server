@@ -9,6 +9,7 @@ import { CommentModule } from '@comments/comment.module';
 import { AuthModule } from '@auth/auth.module';
 import { UserModule } from '@user/user.module';
 import { ConfigModule } from '@nestjs/config';
+import { UtilsModule } from 'utils/utils.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
     CommentModule,
     AuthModule,
     UserModule,
+    UtilsModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
