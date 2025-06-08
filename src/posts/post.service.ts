@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Category } from '@category/entities/category.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { AwsService } from 'aws/aws.service';
+import { UtilsService } from 'utils/utils.service';
 
 @Injectable()
 export class PostService {
@@ -14,6 +16,9 @@ export class PostService {
 
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+
+    private readonly awsService: AwsService,
+    private readonly utilsService: UtilsService,
   ) {}
 
   async create(createPostDto: CreatePostDto) {
@@ -89,5 +94,30 @@ export class PostService {
 
   remove(id: number) {
     return this.postRepository.delete(id);
+  }
+
+  // 이미지 파일을 받아 이를 AWS S3에 업로드하는 역할
+  async saveImage(file: Express.Multer.File) {
+    return await this.imageUpload(file);
+  }
+
+  // 이미지 파일과 이미지 이름을 받아 이를 AWS S3에 업로드하고, 업로드된 이미지의 URL을 반환하는 역할
+  async imageUpload(file: Express.Multer.File) {
+    // 고유한 이미지 이름을 생성
+    const imageName = this.utilsService.getUUID();
+    const ext = file.originalname.split('.').pop();
+
+    if (!ext) {
+      throw new Error('파일 확장자를 알 수 없습니다.');
+    }
+
+    // AWS S3에 이미지를 업로드
+    const imageUrl = await this.awsService.imageUploadToS3(
+      `${imageName}.${ext}`,
+      file,
+      ext,
+    );
+
+    return { imageUrl };
   }
 }

@@ -8,10 +8,15 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  UseInterceptors,
+  HttpCode,
+  Post,
+  UploadedFile,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { ImageUploadDto } from './dto/image-upload.dto';
 import {
   ApiTags,
   ApiOperation,
@@ -19,7 +24,10 @@ import {
   ApiResponse,
   ApiBody,
   ApiQuery,
+  ApiConsumes,
 } from '@nestjs/swagger';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -105,5 +113,21 @@ export class PostController {
   @ApiResponse({ status: 404, description: '게시글을 찾을 수 없습니다.' })
   remove(@Param('id') id: string) {
     return this.postService.remove(+id);
+  }
+
+  @ApiOperation({ summary: '게시글 작성, 수정 시 이미지 업로드' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: '업로드할 파일',
+    type: ImageUploadDto,
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(200)
+  @Post('image')
+  // 요청에서 'file'로 전달되는 파일을 인터셉트
+  // @UploadedFile() 데코레이터를 통해 해당 파일을 메서드의 매개변수로 전달
+  async saveImage(@UploadedFile() file: Express.Multer.File) {
+    // 받아온 file이라는 데이터(여기서는 이미지 파일)를 AWS S3라는 클라우드 저장소에 올리고, 그 파일이 저장된 위치인 URL을 반환
+    return await this.postService.imageUpload(file);
   }
 }
