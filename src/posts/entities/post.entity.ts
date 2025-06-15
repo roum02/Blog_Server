@@ -34,6 +34,9 @@ export class Post {
   @Column({ default: false })
   isPublished: boolean;
 
+  @Column({ length: 500, nullable: true })
+  thumbnailUrl?: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
