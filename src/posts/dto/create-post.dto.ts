@@ -15,4 +15,11 @@ export class CreatePostDto {
 
   @ApiProperty({ example: true, required: false, description: '공개 여부' })
   isPublished?: boolean;
+
+  @ApiProperty({
+    example: 'https://bucket-name.s3.region.amazonaws.com/image.jpg',
+    required: false,
+    description: '섬네일 이미지 URL',
+  })
+  thumbnailUrl?: string;
 }
