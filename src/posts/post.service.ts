@@ -81,11 +81,19 @@ export class PostService {
     return { posts, totalCount };
   }
 
-  findOne(id: number) {
-    return this.postRepository.findOne({
+  async findOne(id: number) {
+    const post = await this.postRepository.findOne({
       where: { id },
       relations: ['category'],
     });
+
+    if (post) {
+      // viewCount 증가
+      await this.postRepository.increment({ id }, 'viewCount', 1);
+      post.viewCount += 1; // 반환되는 객체에도 증가된 값 반영
+    }
+
+    return post;
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
