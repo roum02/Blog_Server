@@ -21,6 +21,7 @@ import { UtilsModule } from 'utils/utils.module';
     UserModule,
     UtilsModule,
     ConfigModule.forRoot({
+      envFilePath: [`config/env/.${process.env.NODE_ENV}.env`, '.env'],
       isGlobal: true,
     }),
   ],
