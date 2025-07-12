@@ -9,7 +9,7 @@ services:
     ports:
       - '8080:8080' # 왼쪽: 호스트, 오른쪽: 컨테이너
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=prod
     env_file:
       - .env
     restart: always
